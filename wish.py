@@ -9,7 +9,7 @@ class wrongStructureException(Exception):
         super().__init__(message)
         self.wrong_elements = []
         for i in range(len(errorlist)):
-            if len(errorlist[i]) != 2:
+            if len(errorlist[i]) != 2 :
                 self.wrong_elements.append(f"Wrong element at index {i}: {errorlist[i]}")
                 
     def __str__(self):
@@ -30,7 +30,7 @@ class impossibleChanceException(Exception):
 def wish(wishlist):
     try:
         for item in wishlist:
-            if (len(item)) != 2:
+            if len(item) != 2:
                 raise wrongStructureException("Wrong structure of chance list:", wishlist)
          
          
@@ -40,7 +40,7 @@ def wish(wishlist):
             raise sumChancesException(f'Sum of chances is not equal to 100 ({total_weight} instead).')
         
         for item in wishlist:
-            if item[1] <= 0:
+            if item[1] < 0:
                 raise wrongStructureException("Impossible chance(s) found:", wishlist)
         
         

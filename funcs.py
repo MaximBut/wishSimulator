@@ -1,50 +1,54 @@
+from decimal import Decimal
+
 FIVESTARFILE = "5stChances.txt";
 FOURSTARFILE = "4stChances.txt";
 fisc = []
 fosc = []
 
 def get5StarChances():
+    chances = []
     with open(FIVESTARFILE, "r") as f:
-        chances = f.read().strip()
+        for line in f:
+            chances.append(float(line))
     return chances
 
 def get4StarChances():
+    chances = []
     with open(FOURSTARFILE, "r") as f:
-        chances = f.read().strip()
+        for line in f:
+            chances.append(float(line))
     return chances
 
-def formWishlist(wishnum, fostpity, fistpity):
+def formWishlist(fostpity, fistpity):
     s5 = get5StarChances()
     s4 = get4StarChances()
     reslist = []
-    if fostpity == 10:
-        fostpity = 0
+    if fistpity == 90:
         reslist.append([
-            "3star", 0,
-            "4star", 100,
-            "5star", 0
+            ["3star", 0],
+            ["4star", 0],
+            ["5star", 100]
         ])
-    elif fistpity == 90:
-        fistpity = 0
+    elif fostpity == 10:
         reslist.append([
-            "3star", 0,
-            "4star", 100,
-            "5star", 0
+            ["3star", 0],
+            ["4star", 100],
+            ["5star", 0]
         ])
     else:
         reslist.append([
-            "3star", 100 - float(s4) - float(s5),
-            "4star", float(s4),
-            "5star", float(s5)
+            ["3star", 100 - Decimal(str(s5[fistpity])) - Decimal(str(s4[fostpity]))],
+            ["4star", Decimal(str(s4[fostpity]))],
+            ["5star", Decimal(str(s5[fistpity]))]
         ])
 
     reslist.append([
-        "lost5050_5st", 50,
-        "won5050_5st", 50
+        ["lost5050_5st", 50],
+        ["won5050_5st", 50]
     ])
 
     reslist.append([
-        "banner4st", 50,
-        "nonbanner4st", 50
+        ["banner4st", 50],
+        ["nonbanner4st", 50]
     ])
     return reslist
