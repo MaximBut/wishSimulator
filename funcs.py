@@ -51,4 +51,10 @@ def formWishlist(fostpity, fistpity):
         ["banner4st", 50],
         ["nonbanner4st", 50]
     ])
+
+    reslist.append([
+        ["fstbanner4st", 33.4],
+        ["scdbanner4st", 33.3],
+        ["trdbanner4st", 33.3]
+    ])
     return reslist

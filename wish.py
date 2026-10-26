@@ -37,7 +37,10 @@ def wish(wishlist):
         total_weight = sum(weight for _, weight in wishlist)
         
         if total_weight != 100:
-            raise sumChancesException(f'Sum of chances is not equal to 100 ({total_weight} instead).')
+            if 100 - total_weight < 0.0001:
+                total_weight = 100
+            else:
+                raise sumChancesException(f'Sum of chances is not equal to 100 ({total_weight} instead).')
         
         for item in wishlist:
             if item[1] < 0:
