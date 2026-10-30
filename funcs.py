@@ -19,7 +19,7 @@ def get4StarChances():
             chances.append(float(line))
     return chances
 
-def formWishlist(fostpity, fistpity):
+def formWishlist(fostpity, fistpity, star4guarantee, star5guarantee):
     s5 = get5StarChances()
     s4 = get4StarChances()
     reslist = []
@@ -36,21 +36,40 @@ def formWishlist(fostpity, fistpity):
             ["5star", 0]
         ])
     else:
+        if (100 - Decimal(str(s5[fistpity])) - Decimal(str(s4[fostpity]))) < 0:
+            reslist.append([
+                ["3star", 0],
+                ["4star", Decimal(str(s4[fostpity]))],
+                ["5star", Decimal(str(s5[fistpity]))]
+            ])
+        else:
+            reslist.append([
+                ["3star", 100 - Decimal(str(s5[fistpity])) - Decimal(str(s4[fostpity]))],
+                ["4star", Decimal(str(s4[fostpity]))],
+                ["5star", Decimal(str(s5[fistpity]))]
+            ])
+
+    if not star5guarantee:
         reslist.append([
-            ["3star", 100 - Decimal(str(s5[fistpity])) - Decimal(str(s4[fostpity]))],
-            ["4star", Decimal(str(s4[fostpity]))],
-            ["5star", Decimal(str(s5[fistpity]))]
+            ["lost5050_5st", 50],
+            ["won5050_5st", 50]
+        ])
+    else:
+        reslist.append([
+            ["lost5050_5st", 0],
+            ["won5050_5st", 100]
         ])
 
-    reslist.append([
-        ["lost5050_5st", 50],
-        ["won5050_5st", 50]
-    ])
-
-    reslist.append([
-        ["banner4st", 50],
-        ["nonbanner4st", 50]
-    ])
+    if not star4guarantee:
+        reslist.append([
+            ["banner4st", 50],
+            ["nonbanner4st", 50]
+        ])
+    else:
+        reslist.append([
+            ["banner4st", 100],
+            ["nonbanner4st", 0]
+        ])
 
     reslist.append([
         ["fstbanner4st", 33.4],
