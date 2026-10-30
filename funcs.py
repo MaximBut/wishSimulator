@@ -1,9 +1,11 @@
 from decimal import Decimal
+from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
 
-FIVESTARFILE = "5stChances.txt";
-FOURSTARFILE = "4stChances.txt";
+DATA_DIR = Path(__file__).resolve().parent / "data"
+FIVESTARFILE = DATA_DIR / "5stChances.txt"
+FOURSTARFILE = DATA_DIR / "4stChances.txt"
 fisc = []
 fosc = []
 
@@ -177,14 +179,3 @@ def finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2co
     print(f"Количество круток за блеск: {sumStarglitter // 20}")
     print(f"Количество круток за пыль: {pullsInShop} + {min(pullsInShop, sumStardust // 90)}")
     print("---------------------")
-
-def choose_file():
-    root = tk.Tk()
-    root.withdraw()
-    root.attributes("-topmost", True)
-    path = filedialog.askopenfilename(
-        title="Выберите файл",
-        filetypes=[("Текстовые файлы", "*.txt"), ("Все файлы", "*.*")],
-    )
-    root.destroy()
-    return path

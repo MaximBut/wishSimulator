@@ -1,7 +1,5 @@
 import funcs
 import wish
-import tkinter as tk
-from tkinter import filedialog
 st5chances = funcs.get5StarChances()
 st4chances = funcs.get4StarChances()
 
@@ -10,7 +8,7 @@ if __name__ == "__main__":
     print("---------------------")
     source = int(input("Выберите источник конфигурации (1 - файл, 2 - ввод вручную): "))
     if source == 1:
-        fname = funcs.choose_file()
+        fname = input("Введите путь к файлу конфигурации: ")
         fconfig_values = funcs.file_config(fname)
         wishnum = fconfig_values[0]
         p4st = fconfig_values[1]
@@ -157,4 +155,4 @@ if __name__ == "__main__":
             print(f"Ошибка при крутке {pullnumber}: {e}")
             break
 
-    funcs.finalreport(wishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter)
+    funcs.finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter)
