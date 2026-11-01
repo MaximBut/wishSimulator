@@ -5,6 +5,9 @@ from configvars import *
 fisc = []
 fosc = []
 
+def text(russian, english):
+    return english if getLang() == "en" else russian
+
 def get5StarChances():
     chances = []
     with open(FIVESTARFILE, "r") as f:
@@ -81,55 +84,55 @@ def formWishlist(fostpity, fistpity, star4guarantee, star5guarantee):
     
     return reslist
 def config():
-    print("Введите параметры для симулятора (неверное или пустое приравнивается к 0):")
-    try: wishnum = int(input("Количество круток для симуляции (1-10000): "))
+    print(text("Введите параметры для симулятора (неверное или пустое приравнивается к 0):", "Enter simulator parameters (invalid or empty values are treated as 0):"))
+    try: wishnum = int(input(text("Количество круток для симуляции (1-10000): ", "Number of pulls to simulate (1-10000): ")))
     except: wishnum = 0
 
-    try: p4st = int(input("Текущая 4-звёздное крутка (0-10): "))
+    try: p4st = int(input(text("Текущая 4-звёздное крутка (0-10): ", "Current 4-star pity (0-10): ")))
     except: p4st = 0
 
-    try: p5st = int(input("Текущая 5-звёздное крутка (0-90): "))
+    try: p5st = int(input(text("Текущая 5-звёздное крутка (0-90): ", "Current 5-star pity (0-90): ")))
     except: p5st = 0
 
-    try: st5const = int(input("Консты на легу (0-6); Пустое приравнивается к отсутствию: "))
+    try: st5const = int(input(text("Консты на легу (0-6); Пустое приравнивается к отсутствию: ", "5-star constellations (0-6); empty means not obtained: ")))
     except: st5const = -1
 
     if SELECTCERTAIN4STARS:
         charlist = get4starNameList(getLang())
         selectedlist = []
         while len(selectedlist) < 3:
-            name = input("Введите имя персонажа (0 для просмотра списка): ")
+            name = input(text("Введите имя персонажа (0 для просмотра списка): ", "Enter character name (0 to view the list): "))
             if name == "0":
-                print("Список доступных 4-звёздных персонажей:")
+                print(text("Список доступных 4-звёздных персонажей:", "Available 4-star characters:"))
                 for j, n in enumerate(get4starNameList(getLang()), start=1):
                     print(f"{j}. {n}")
                 continue
             elif name and (name not in charlist or name in selectedlist):
-                print("Ошибка: выбранный персонаж не найден в списке или уже выбран.\nПовторите попытку.")
+                print(text("Ошибка: выбранный персонаж не найден в списке или уже выбран.\nПовторите попытку.", "Error: character not found or already selected.\nPlease try again."))
                 continue
             elif name and name in charlist and name not in selectedlist:
-                print(f"Выбран персонаж: {name}")
+                print(text(f"Выбран персонаж: {name}", f"Selected character: {name}"))
                 selectedlist.append(name)
 
         SELECTEDCHARS.extend(selectedlist)
 
 
-    try: b4st1const = int(input("Консты на первую ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: "))
+    try: b4st1const = int(input(text("Консты на первую ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: ", "First event 4-star constellations (0-6); empty means not obtained: ")))
     except: b4st1const = -1
 
-    try: b4st2const = int(input("Консты на вторую ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: "))
+    try: b4st2const = int(input(text("Консты на вторую ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: ", "Second event 4-star constellations (0-6); empty means not obtained: ")))
     except: b4st2const = -1
 
-    try: b4st3const = int(input("Консты на третью ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: "))
+    try: b4st3const = int(input(text("Консты на третью ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: ", "Third event 4-star constellations (0-6); empty means not obtained: ")))
     except: b4st3const = -1
 
-    try: avlPlsInShop = int(input("Текущее количество доступных круток в магазине за пыль (0-5): "))
+    try: avlPlsInShop = int(input(text("Текущее количество доступных круток в магазине за пыль (0-5): ", "Available shop pulls for stardust (0-5): ")))
     except: avlPlsInShop = 0
 
-    try: avlStardust = int(input("Текущее количество доступной звездной пыли: "))
+    try: avlStardust = int(input(text("Текущее количество доступной звездной пыли: ", "Available stardust: ")))
     except: avlStardust = 0
 
-    try: avlStarglitter = int(input("Текущее количество доступного звездного блеска: "))
+    try: avlStarglitter = int(input(text("Текущее количество доступного звездного блеска: ", "Available starglitter: ")))
     except: avlStarglitter = 0
     if wishnum < 1 or wishnum > 10000: wishnum = 0
     if p4st < 0 or p4st > 10: p4st = 0
@@ -144,37 +147,37 @@ def config():
     return [wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter]
 def finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, pullsInShop, sumStardust, sumStarglitter):
     print("\n---------------------")
-    print("Симуляция завершена!")
-    print(f"Количество круток для симуляции: {startwishnum} + {wishnum - startwishnum}")
-    print(f"Текущая 4-звёздное крутка: {p4st}")
-    print(f"Текущая 5-звёздное крутка: {p5st}")
+    print(text("Симуляция завершена!", "Simulation complete!"))
+    print(text(f"Количество круток для симуляции: {startwishnum} + {wishnum - startwishnum}", f"Pulls simulated: {startwishnum} + {wishnum - startwishnum}"))
+    print(text(f"Текущая 4-звёздное крутка: {p4st}", f"Current 4-star pity: {p4st}"))
+    print(text(f"Текущая 5-звёздное крутка: {p5st}", f"Current 5-star pity: {p5st}"))
     if st5const == -1:
-        print("Ивент лега не выпала")
+        print(text("Ивент лега не выпала", "Event 5-star not obtained"))
     else:
-        print(f"Консты на легу: {st5const}")
+        print(text(f"Консты на легу: {st5const}", f"Event 5-star constellations: {st5const}"))
 
     if b4st1const == -1:
-        print("Первая баннерная четверка не выпала")
+        print(text("Первая баннерная четверка не выпала", "First event 4-star not obtained"))
     else:
-        print(f"Консты на первую ивент 4-ку в баннере: {b4st1const}")
+        print(text(f"Консты на первую ивент 4-ку в баннере: {b4st1const}", f"First event 4-star constellations: {b4st1const}"))
 
     if b4st2const == -1:
-        print("Вторая баннерная четверка не выпала")
+        print(text("Вторая баннерная четверка не выпала", "Second event 4-star not obtained"))
     else:
-        print(f"Консты на вторую ивент 4-ку в баннере: {b4st2const}")
+        print(text(f"Консты на вторую ивент 4-ку в баннере: {b4st2const}", f"Second event 4-star constellations: {b4st2const}"))
 
     if b4st3const == -1:
-        print("Третья баннерная четверка не выпала")
+        print(text("Третья баннерная четверка не выпала", "Third event 4-star not obtained"))
     else:
-        print(f"Консты на третью ивент 4-ку в баннере: {b4st3const}")
+        print(text(f"Консты на третью ивент 4-ку в баннере: {b4st3const}", f"Third event 4-star constellations: {b4st3const}"))
     print("---------------------")
-    print(f"Общий блеск и пыль, полученные в процессе симуляции: {sumStarglitter}, {sumStardust}")
-    print(f"Количество доступных круток в магазине за пыль: {pullsInShop}")
-    print(f"Количество круток за блеск: {sumStarglitter // 20}")
-    print(f"Количество круток за пыль: {wishnum - startwishnum - (sumStarglitter // 20)}")
+    print(text(f"Общий блеск и пыль, полученные в процессе симуляции: {sumStarglitter}, {sumStardust}", f"Total starglitter and stardust gained: {sumStarglitter}, {sumStardust}"))
+    print(text(f"Количество доступных круток в магазине за пыль: {pullsInShop}", f"Available shop pulls for stardust: {pullsInShop}"))
+    print(text(f"Количество круток за блеск: {sumStarglitter // 20}", f"Pulls for starglitter: {sumStarglitter // 20}"))
+    print(text(f"Количество круток за пыль: {wishnum - startwishnum - (sumStarglitter // 20)}", f"Pulls for stardust: {wishnum - startwishnum - (sumStarglitter // 20)}"))
     print("---------------------")
     if SELECTCERTAIN4STARS:
-        print("Консты на четверки не из баннера:")
+        print(text("Консты на четверки не из баннера:", "Non-event 4-star constellations:"))
         names = [
             name for name in get4starNameList(getLang())
             if name not in SELECTEDCHARS
