@@ -1,11 +1,7 @@
 from decimal import Decimal
 from pathlib import Path
-import tkinter as tk
-from tkinter import filedialog
+from configvars import *
 
-DATA_DIR = Path(__file__).resolve().parent / "data"
-FIVESTARFILE = DATA_DIR / "5stChances.txt"
-FOURSTARFILE = DATA_DIR / "4stChances.txt"
 fisc = []
 fosc = []
 
@@ -78,6 +74,11 @@ def formWishlist(fostpity, fistpity, star4guarantee, star5guarantee):
         ["scdbanner4st", 33.3],
         ["trdbanner4st", 33.3]
     ])
+
+    another4stchars = list([i, 5.26] for i in get4starNameList(getLang()) if i not in SELECTEDCHARS)
+    another4stchars[0] = [another4stchars[0][0], 5.32]
+    reslist.extend(another4stchars)
+    
     return reslist
 def config():
     print("Введите параметры для симулятора (неверное или пустое приравнивается к 0):")
@@ -92,6 +93,26 @@ def config():
 
     try: st5const = int(input("Консты на легу (0-6); Пустое приравнивается к отсутствию: "))
     except: st5const = -1
+
+    if SELECTCERTAIN4STARS:
+        charlist = get4starNameList(getLang())
+        selectedlist = []
+        while len(selectedlist) < 3:
+            name = input("Введите имя персонажа (0 для просмотра списка): ")
+            if name == "0":
+                print("Список доступных 4-звёздных персонажей:")
+                for j, n in enumerate(get4starNameList(getLang()), start=1):
+                    print(f"{j}. {n}")
+                continue
+            elif name and (name not in charlist or name in selectedlist):
+                print("Ошибка: выбранный персонаж не найден в списке или уже выбран.\nПовторите попытку.")
+                continue
+            elif name and name in charlist and name not in selectedlist:
+                print(f"Выбран персонаж: {name}")
+                selectedlist.append(name)
+
+        SELECTEDCHARS.extend(selectedlist)
+
 
     try: b4st1const = int(input("Консты на первую ивент 4-ку в баннере (0-6); Пустое приравнивается к отсутствию: "))
     except: b4st1const = -1
@@ -121,33 +142,6 @@ def config():
     if avlStardust < 0: avlStardust = 0
     if avlStarglitter < 0: avlStarglitter = 0
     return [wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter]
-def file_config(filename):
-    with open(filename, "r") as f:
-        lines = f.readlines()
-        wishnum = int(lines[0].strip())
-        p4st = int(lines[1].strip())
-        p5st = int(lines[2].strip())
-        st5const = int(lines[3].strip())
-        b4st1const = int(lines[4].strip())
-        b4st2const = int(lines[5].strip())
-        b4st3const = int(lines[6].strip())
-        avlPlsInShop = int(lines[7].strip())
-        avlStardust = int(lines[8].strip())
-        avlStarglitter = int(lines[9].strip())
-
-    if wishnum < 1 or wishnum > 10000: wishnum = 0
-    if p4st < 0 or p4st > 10: p4st = 0
-    if p5st < 0 or p5st > 90: p5st = 0
-    if st5const < -1 or st5const > 6: st5const = -1
-    if b4st1const < -1 or b4st1const > 6: b4st1const = -1
-    if b4st2const < -1 or b4st2const > 6: b4st2const = -1
-    if b4st3const < -1 or b4st3const > 6: b4st3const = -1
-    if avlPlsInShop < 0 or avlPlsInShop > 5: avlPlsInShop = 0
-    if avlStardust < 0: avlStardust = 0
-    if avlStarglitter < 0: avlStarglitter = 0
-    
-    return [wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter]
-
 def finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, pullsInShop, sumStardust, sumStarglitter):
     print("\n---------------------")
     print("Симуляция завершена!")
@@ -177,5 +171,56 @@ def finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2co
     print(f"Общий блеск и пыль, полученные в процессе симуляции: {sumStarglitter}, {sumStardust}")
     print(f"Количество доступных круток в магазине за пыль: {pullsInShop}")
     print(f"Количество круток за блеск: {sumStarglitter // 20}")
-    print(f"Количество круток за пыль: {pullsInShop} + {min(pullsInShop, sumStardust // 90)}")
+    print(f"Количество круток за пыль: {wishnum - startwishnum - (sumStarglitter // 20)}")
     print("---------------------")
+    if SELECTCERTAIN4STARS:
+        print("Консты на четверки не из баннера:")
+        names = [
+            name for name in get4starNameList(getLang())
+            if name not in SELECTEDCHARS
+        ]
+        with open(FOURSTARCONSTELLATIONS, "r") as f:
+            constellations = [line.strip() for line in f]
+        for number, (name, constellation) in enumerate(zip(names, constellations), start=1):
+            print(f"{number}. {name} - {constellation}")
+        print("---------------------")
+
+
+def getLang(newlang=None):
+    if newlang is not None:
+        with open (LANGFILE, "w") as f:
+            f.write(newlang)
+        return newlang
+    
+    with open (LANGFILE, "r") as f:
+        return f.read().strip()
+    f.close()
+
+def get4starNameList(lang):
+    f = FOURSTARNAMEENFILE if lang == 'en' else FOURSTARNAMERUFILE
+    with open (f, "r") as file:
+        return [line.strip() for line in file]
+
+def update4starConstellation(name):
+    names = get4starNameList(getLang())
+    if name not in names:
+        raise ValueError(f"Unknown 4-star character: {name}")
+
+    with open(FOURSTARCONSTELLATIONS, "r") as file:
+        constellations = [int(line.strip()) for line in file]
+
+    if len(constellations) != len(names):
+        raise ValueError("4-star constellation data does not match the character list")
+
+    index = names.index(name)
+    previous = constellations[index]
+    constellations[index] = min(previous + 1, 6)
+
+    with open(FOURSTARCONSTELLATIONS, "w") as file:
+        file.writelines(f"{constellation}\n" for constellation in constellations)
+
+    return previous, constellations[index]
+
+def defineCertain4stars(status):
+    global SELECTCERTAIN4STARS
+    SELECTCERTAIN4STARS = status

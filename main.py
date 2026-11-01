@@ -3,35 +3,32 @@ import wish
 st5chances = funcs.get5StarChances()
 st4chances = funcs.get4StarChances()
 
+def selected_4star_name(index):
+    if index < len(funcs.SELECTEDCHARS):
+        return funcs.SELECTEDCHARS[index]
+    return f"{index + 1}-й баннерный 4-звёздный персонаж"
+
 if __name__ == "__main__":
     print("Симулятор круток")
     print("---------------------")
-    source = int(input("Выберите источник конфигурации (1 - файл, 2 - ввод вручную): "))
-    if source == 1:
-        fname = input("Введите путь к файлу конфигурации: ")
-        fconfig_values = funcs.file_config(fname)
-        wishnum = fconfig_values[0]
-        p4st = fconfig_values[1]
-        p5st = fconfig_values[2]
-        st5const = fconfig_values[3]
-        b4st1const = fconfig_values[4]
-        b4st2const = fconfig_values[5]
-        b4st3const = fconfig_values[6]
-        avlPlsInShop = fconfig_values[7]
-        avlStardust = fconfig_values[8]
-        avlStarglitter = fconfig_values[9]
-    else:
-        config_values = funcs.config()
-        wishnum = config_values[0]
-        p4st = config_values[1]
-        p5st = config_values[2]
-        st5const = config_values[3]
-        b4st1const = config_values[4]
-        b4st2const = config_values[5]
-        b4st3const = config_values[6]
-        avlPlsInShop = config_values[7]
-        avlStardust = config_values[8]
-        avlStarglitter = config_values[9]
+    if funcs.getLang() != "en" and funcs.getLang() != "ru":
+        lang = input("Введите язык для имен персонажей(en/ru): ")
+        lang = funcs.getLang(lang)
+    
+    if (input("Определять ли определенных 4-звёздных персонажей? (1 - да, 0 - нет): ") == "1"):
+        funcs.SELECTCERTAIN4STARS = True
+
+    config_values = funcs.config()
+    wishnum = config_values[0]
+    p4st = config_values[1]
+    p5st = config_values[2]
+    st5const = config_values[3]
+    b4st1const = config_values[4]
+    b4st2const = config_values[5]
+    b4st3const = config_values[6]
+    avlPlsInShop = config_values[7]
+    avlStardust = config_values[8]
+    avlStarglitter = config_values[9]
 
     pullnumber = 1
     startwishnum = wishnum
@@ -46,7 +43,7 @@ if __name__ == "__main__":
         try:
             result = wish.wish(wishlist[0])
             if result == "3star":
-                print(f"Крутка {pullnumber}: 3зв персонаж")
+                print(f"Крутка {pullnumber}: 3зв")
                 avlStardust += 20
                 sumStardust += 20
             
@@ -58,53 +55,62 @@ if __name__ == "__main__":
                     star4guarantee = False
                     fourstarbanner = wish.wish(wishlist[3])
                     if fourstarbanner == "fstbanner4st":
-                        print(f"Крутка {pullnumber}: Первый 4зв баннерный персонаж")
+                        character_name = selected_4star_name(0)
+                        print(f"Крутка {pullnumber}: {character_name}")
                         if b4st1const != -1:
                             if b4st1const < 6:
                                 b4st1const += 1
                                 avlStarglitter += 8
                                 sumStarglitter += 8
-                                print(f"Консты на него: {b4st1const-1} -> {b4st1const}")
+                                print(f"Консты на {character_name}: {b4st1const-1} -> {b4st1const}")
                             else:
-                                print("Консты на него уже максимальные (6)")
+                                print(f"Консты на {character_name} уже максимальные (6)")
                                 avlStarglitter += 20
                                 sumStarglitter += 20
                         else:
-                            print(f"Крутка {pullnumber}: Получено нового 1го 4зв баннерного персонажа")
+                            print(f"Крутка {pullnumber}: Получен новый персонаж {character_name}")
                             b4st1const = 0
                     elif fourstarbanner == "scdbanner4st":
+                        character_name = selected_4star_name(1)
                         if b4st2const != -1:
-                            print(f"Крутка {pullnumber}: Второй 4зв баннерный персонаж")
+                            print(f"Крутка {pullnumber}: {character_name}")
                             if b4st2const < 6:
                                 b4st2const += 1
                                 avlStarglitter += 8
                                 sumStarglitter += 8
-                                print(f"Консты на него: {b4st2const-1} -> {b4st2const}")
+                                print(f"Консты на {character_name}: {b4st2const-1} -> {b4st2const}")
                             else:
-                                print("Консты на него уже максимальные (6)")
+                                print(f"Консты на {character_name} уже максимальные (6)")
                                 avlStarglitter += 20
                                 sumStarglitter += 20
                         else:
-                            print(f"Крутка {pullnumber}: Получено нового 2го 4зв баннерного персонажа")
+                            print(f"Крутка {pullnumber}: Получен новый персонаж {character_name}")
                             b4st2const = 0
                     elif fourstarbanner == "trdbanner4st":
+                        character_name = selected_4star_name(2)
                         if b4st3const != -1:
-                            print(f"Крутка {pullnumber}: Третий 4зв баннерный персонаж")
+                            print(f"Крутка {pullnumber}: {character_name}")
                             if b4st3const < 6:
                                 b4st3const += 1
                                 avlStarglitter += 8
                                 sumStarglitter += 8
-                                print(f"Консты на него: {b4st3const-1} -> {b4st3const}")
+                                print(f"Консты на {character_name}: {b4st3const-1} -> {b4st3const}")
                             else:
-                                print("Консты на него уже максимальные (6)")
+                                print(f"Консты на {character_name} уже максимальные (6)")
                                 avlStarglitter += 20
                                 sumStarglitter += 20
                         else:
-                            print(f"Крутка {pullnumber}: Получено нового 3го 4зв баннерного персонажа")
+                            print(f"Крутка {pullnumber}: Получен новый персонаж {character_name}")
                             b4st3const = 0
 
                 elif fourstarbanner == "nonbanner4st":
-                    print(f"Крутка {pullnumber}: Небаннерный 4зв персонаж")
+                    character_name = wish.wish(wishlist[4:])
+                    previous_constellation, current_constellation = funcs.update4starConstellation(character_name)
+                    print(f"Крутка {pullnumber}: {character_name}")
+                    if current_constellation > previous_constellation:
+                        print(f"Консты на {character_name}: {previous_constellation} -> {current_constellation}")
+                    else:
+                        print(f"Консты на {character_name} уже максимальные (6)")
                     star4guarantee = True
                     avlStarglitter += 8
                     sumStarglitter += 8
@@ -155,4 +161,4 @@ if __name__ == "__main__":
             print(f"Ошибка при крутке {pullnumber}: {e}")
             break
 
-    funcs.finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, avlStardust, avlStarglitter)
+    funcs.finalreport(startwishnum, wishnum, p4st, p5st, st5const, b4st1const, b4st2const, b4st3const, avlPlsInShop, sumStardust, sumStarglitter)
